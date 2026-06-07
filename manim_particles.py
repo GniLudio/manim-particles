@@ -1,6 +1,8 @@
 from manim import *
 import typing
 
+__all__ = ["Disintegrate", "Materialize"]
+
 def _apparent_color(m: VMobject) -> np.ndarray:
     if m.get_fill_opacity() > 0:
         return color_to_rgb(m.get_fill_color())
