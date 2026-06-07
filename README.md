@@ -81,7 +81,8 @@ Works with any 2D `VMobject` or `VGroup`, including:
 - **Open paths** — `Line`, `Arrow`, `CurvedArrow`, `FunctionGraph`, …
 - **Compound objects** — `Axes`, `NumberLine`, `VGroup` of mixed shapes
 - **Semi-transparent objects** — opacity is preserved per particle
-- Has not been tested on 3D objects, but there are plans to do that soon
+
+Does not work with 3D objects.
 
 ## How it works
 
