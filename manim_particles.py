@@ -3,13 +3,16 @@ import typing
 
 __all__ = ["Disintegrate", "Materialize"]
 
+
 def _apparent_color(m: VMobject) -> np.ndarray:
     if m.get_fill_opacity() > 0:
         return color_to_rgb(m.get_fill_color())
     return color_to_rgb(m.get_stroke_color())
 
+
 def _apparent_opacity(m: VMobject) -> float:
     return m.get_fill_opacity() or m.get_stroke_opacity()
+
 
 def _ensure_filled(m: VMobject) -> VMobject:
     if m.get_fill_opacity() > 0:
@@ -21,7 +24,9 @@ def _ensure_filled(m: VMobject) -> VMobject:
     is_closed = np.linalg.norm(pts[-1] - pts[0]) < 0.01
     n = 64
     if is_closed:
-        path_pts = np.array([m.point_from_proportion(t) for t in np.linspace(0, 1, n, endpoint=False)])
+        path_pts = np.array(
+            [m.point_from_proportion(t) for t in np.linspace(0, 1, n, endpoint=False)]
+        )
         tangents = np.diff(np.vstack([path_pts, path_pts[0]]), axis=0)
         unit_t = tangents / np.maximum(np.linalg.norm(tangents, axis=1, keepdims=True), 1e-8)
         perps = np.c_[-unit_t[:, 1], unit_t[:, 0], np.zeros(n)]
@@ -35,7 +40,12 @@ def _ensure_filled(m: VMobject) -> VMobject:
     avg_perps /= np.maximum(np.linalg.norm(avg_perps, axis=1, keepdims=True), 1e-8)
     upper = path_pts + stroke_radius * avg_perps
     lower = path_pts - stroke_radius * avg_perps
-    return Polygon(*np.vstack([upper, lower[::-1]])).set_stroke(width=0).set_fill(color=color, opacity=opacity)
+    return (
+        Polygon(*np.vstack([upper, lower[::-1]]))
+        .set_stroke(width=0)
+        .set_fill(color=color, opacity=opacity)
+    )
+
 
 def _flatten(mob: Mobject) -> VMobject:
     leaves = [_ensure_filled(m) for m in mob.get_family() if len(m.points) > 0]
@@ -44,6 +54,7 @@ def _flatten(mob: Mobject) -> VMobject:
     if len(leaves) == 1:
         return leaves[0]
     return Union(*leaves)
+
 
 class _Scatter(AnimationGroup):
     def __init__(
@@ -86,8 +97,12 @@ class _Scatter(AnimationGroup):
             return rgb_to_color(rgb), rgba[3] / 255.0
 
         pieces = VGroup()
-        for x in np.arange(vmobject.get_left()[0], vmobject.get_right()[0] + piece_size, piece_size):
-            for y in np.arange(vmobject.get_bottom()[1], vmobject.get_top()[1] + piece_size, piece_size):
+        for x in np.arange(
+            vmobject.get_left()[0], vmobject.get_right()[0] + piece_size, piece_size
+        ):
+            for y in np.arange(
+                vmobject.get_bottom()[1], vmobject.get_top()[1] + piece_size, piece_size
+            ):
                 piece = _intersect(union, Square(side_length=piece_size).move_to((x, y, 0)))
                 if piece.has_points():
                     color, opacity = _sample(piece.get_center())
@@ -110,6 +125,7 @@ class _Scatter(AnimationGroup):
 
         animations = (animate_piece(piece) for piece in pieces)
         super().__init__(animations, **kwargs)
+
 
 class Disintegrate(_Scatter):
     def __init__(self, vmobject: VMobject, **kwargs) -> None:

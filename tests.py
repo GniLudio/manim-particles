@@ -28,6 +28,7 @@ TESTS = [
     "test_23_stroke_lines_multicolor",
 ]
 
+
 class TestScene(Scene):
     def construct(self):
         self.run_all_tests()
@@ -37,7 +38,7 @@ class TestScene(Scene):
         for num in nums:
             getattr(self, TESTS[num])()
             self.clear()
-    
+
     def run_all_tests(self):
         for name in TESTS:
             getattr(self, name)()
@@ -82,23 +83,29 @@ class TestScene(Scene):
         self.wait(0.5)
 
     def test_06_curved_arrow(self):
-        my_curved_arrow = CurvedArrow(LEFT * 2 + DOWN, RIGHT * 2 + UP, color=BLUE_B).set_opacity(0.7).shift(LEFT)
+        my_curved_arrow = (
+            CurvedArrow(LEFT * 2 + DOWN, RIGHT * 2 + UP, color=BLUE_B).set_opacity(0.7).shift(LEFT)
+        )
         self.play(Materialize(my_curved_arrow))
         self.wait(0.5)
         self.play(Disintegrate(my_curved_arrow))
         self.wait(0.5)
 
     def test_07_purple_polygon(self):
-        my_polygon = Polygon(
-            UP * 2, RIGHT * 1.5 + UP * 0.5, RIGHT * 2 + DOWN, DOWN * 1.5, LEFT * 2
-        ).set_fill(PURPLE, opacity=0.5).set_stroke(WHITE, width=2)
+        my_polygon = (
+            Polygon(UP * 2, RIGHT * 1.5 + UP * 0.5, RIGHT * 2 + DOWN, DOWN * 1.5, LEFT * 2)
+            .set_fill(PURPLE, opacity=0.5)
+            .set_stroke(WHITE, width=2)
+        )
         self.play(Materialize(my_polygon))
         self.wait(0.5)
         self.play(Disintegrate(my_polygon))
         self.wait(0.5)
 
     def test_08_cyan_pentagon(self):
-        my_pentagon = RegularPolygon(n=5).scale(2).set_stroke(PURE_CYAN, width=4).set_fill(opacity=0)
+        my_pentagon = (
+            RegularPolygon(n=5).scale(2).set_stroke(PURE_CYAN, width=4).set_fill(opacity=0)
+        )
         self.play(Materialize(my_pentagon))
         self.wait(0.5)
         self.play(Disintegrate(my_pentagon))
@@ -134,14 +141,18 @@ class TestScene(Scene):
 
     def test_13_axes_parabola(self):
         my_axes = Axes(x_range=[-2, 2], y_range=[-1, 4], x_length=6, y_length=4)
-        my_parabola = my_axes.plot(lambda x: x ** 2, color=MAROON)
+        my_parabola = my_axes.plot(lambda x: x**2, color=MAROON)
         self.play(Materialize(VGroup(my_axes, my_parabola)))
         self.wait(0.5)
         self.play(Disintegrate(VGroup(my_axes, my_parabola)))
         self.wait(0.5)
 
     def test_14_rainbow_text(self):
-        my_text = Text("Rainbow", font_size=100).set_color_by_gradient(RED, ORANGE, YELLOW, GREEN, BLUE, PURPLE).to_corner(DL)
+        my_text = (
+            Text("Rainbow", font_size=100)
+            .set_color_by_gradient(RED, ORANGE, YELLOW, GREEN, BLUE, PURPLE)
+            .to_corner(DL)
+        )
         self.play(Materialize(my_text))
         self.wait(0.5)
         self.play(Disintegrate(my_text))
@@ -199,7 +210,10 @@ class TestScene(Scene):
     def test_19_multicolor_shapes(self):
         shapes = VGroup(
             Triangle().scale(1.5).set_fill(RED_C, opacity=0.9).set_stroke(WHITE, width=1),
-            RegularPolygon(n=6).scale(1.5).set_fill(GREEN_C, opacity=0.9).set_stroke(WHITE, width=1),
+            RegularPolygon(n=6)
+            .scale(1.5)
+            .set_fill(GREEN_C, opacity=0.9)
+            .set_stroke(WHITE, width=1),
             Star(n=5, outer_radius=1.5).set_fill(YELLOW, opacity=0.9).set_stroke(WHITE, width=1),
             RegularPolygon(n=8).scale(1.5).set_fill(BLUE_C, opacity=0.9).set_stroke(WHITE, width=1),
         ).arrange(RIGHT, buff=0.3)
@@ -210,11 +224,11 @@ class TestScene(Scene):
 
     def test_20_stroke_squares_multicolor(self):
         squares = VGroup(
-            Square().set_stroke(RED,    width=6            ).set_fill(opacity=0),
+            Square().set_stroke(RED, width=6).set_fill(opacity=0),
             Square().set_stroke(ORANGE, width=6, opacity=0.8).set_fill(opacity=0),
             Square().set_stroke(YELLOW, width=6, opacity=0.6).set_fill(opacity=0),
-            Square().set_stroke(GREEN,  width=6, opacity=0.4).set_fill(opacity=0),
-            Square().set_stroke(BLUE,   width=6            ).set_fill(opacity=0),
+            Square().set_stroke(GREEN, width=6, opacity=0.4).set_fill(opacity=0),
+            Square().set_stroke(BLUE, width=6).set_fill(opacity=0),
             Square().set_stroke(PURPLE, width=6, opacity=0.7).set_fill(opacity=0),
         ).arrange(RIGHT, buff=0.2)
         self.play(Materialize(squares))
@@ -223,13 +237,19 @@ class TestScene(Scene):
         self.wait(0.5)
 
     def test_21_stroke_circles_multicolor(self):
-        circles = VGroup(
-            Circle(radius=0.6).set_stroke(TEAL,       width=3            ).set_fill(opacity=0),
-            Circle(radius=0.6).set_stroke(PINK,       width=5, opacity=0.9).set_fill(opacity=0),
-            Circle(radius=0.6).set_stroke(GOLD,       width=8, opacity=0.6).set_fill(opacity=0),
-            Circle(radius=0.6).set_stroke(MAROON,     width=4, opacity=0.8).set_fill(opacity=0),
-            Circle(radius=0.6).set_stroke(LIGHT_BROWN, width=6, opacity=0.5).set_fill(opacity=0),
-        ).arrange(RIGHT, buff=0.25).to_corner(UL)
+        circles = (
+            VGroup(
+                Circle(radius=0.6).set_stroke(TEAL, width=3).set_fill(opacity=0),
+                Circle(radius=0.6).set_stroke(PINK, width=5, opacity=0.9).set_fill(opacity=0),
+                Circle(radius=0.6).set_stroke(GOLD, width=8, opacity=0.6).set_fill(opacity=0),
+                Circle(radius=0.6).set_stroke(MAROON, width=4, opacity=0.8).set_fill(opacity=0),
+                Circle(radius=0.6)
+                .set_stroke(LIGHT_BROWN, width=6, opacity=0.5)
+                .set_fill(opacity=0),
+            )
+            .arrange(RIGHT, buff=0.25)
+            .to_corner(UL)
+        )
         self.play(Materialize(circles))
         self.wait(0.5)
         self.play(Disintegrate(circles))
@@ -237,11 +257,21 @@ class TestScene(Scene):
 
     def test_22_stroke_shapes_multicolor(self):
         shapes = VGroup(
-            Triangle().scale(1.3).set_stroke(RED_C,        width=5            ).set_fill(opacity=0),
-            RegularPolygon(n=5).scale(1.3).set_stroke(PURE_GREEN, width=4, opacity=0.7).set_fill(opacity=0),
-            Star(n=5, outer_radius=1.3).set_stroke(YELLOW, width=3, opacity=0.5).set_fill(opacity=0),
-            RegularPolygon(n=6).scale(1.3).set_stroke(BLUE_C,     width=6, opacity=0.9).set_fill(opacity=0),
-            Arc(radius=1.2, angle=3*PI/2).set_stroke(ORANGE,      width=5, opacity=0.8).set_fill(opacity=0),
+            Triangle().scale(1.3).set_stroke(RED_C, width=5).set_fill(opacity=0),
+            RegularPolygon(n=5)
+            .scale(1.3)
+            .set_stroke(PURE_GREEN, width=4, opacity=0.7)
+            .set_fill(opacity=0),
+            Star(n=5, outer_radius=1.3)
+            .set_stroke(YELLOW, width=3, opacity=0.5)
+            .set_fill(opacity=0),
+            RegularPolygon(n=6)
+            .scale(1.3)
+            .set_stroke(BLUE_C, width=6, opacity=0.9)
+            .set_fill(opacity=0),
+            Arc(radius=1.2, angle=3 * PI / 2)
+            .set_stroke(ORANGE, width=5, opacity=0.8)
+            .set_fill(opacity=0),
         ).arrange(RIGHT, buff=0.2)
         self.play(Materialize(shapes))
         self.wait(0.5)
@@ -250,11 +280,11 @@ class TestScene(Scene):
 
     def test_23_stroke_lines_multicolor(self):
         lines = VGroup(
-            Line(stroke_width = 23).scale(1.3).set_stroke(RED_C,        width=5            ).set_fill(opacity=0),
+            Line(stroke_width=23).scale(1.3).set_stroke(RED_C, width=5).set_fill(opacity=0),
             Line().scale(1.3).set_stroke(PURE_GREEN, width=4, opacity=0.7).set_fill(opacity=0),
             Line().set_stroke(YELLOW, width=3, opacity=0.5).set_fill(opacity=0),
-            Line().scale(1.3).set_stroke(BLUE_C,     width=6, opacity=0.9).set_fill(opacity=0),
-            Line().set_stroke(ORANGE,      width=5, opacity=0.8).set_fill(opacity=0),
+            Line().scale(1.3).set_stroke(BLUE_C, width=6, opacity=0.9).set_fill(opacity=0),
+            Line().set_stroke(ORANGE, width=5, opacity=0.8).set_fill(opacity=0),
         ).arrange(DOWN, buff=0.2)
         self.play(Materialize(lines))
         self.wait(0.5)
@@ -276,7 +306,7 @@ if _missing_from_list or _missing_from_class:
 
 
 TESTS_3D = [
-    "test_00_3d_sphere", # Fails
+    "test_00_3d_sphere",  # Fails
     "test_01_3d_cube",
     "test_02_3d_cylinder",
     "test_03_3d_cone",
@@ -293,6 +323,7 @@ TESTS_3D = [
     "test_14_3d_platonic_solids",
     "test_15_3d_sphere_wireframe",
 ]
+
 
 class Test3DScene(ThreeDScene):
     def construct(self):
@@ -355,8 +386,12 @@ class Test3DScene(ThreeDScene):
     def test_05_3d_axes(self):
         self._setup_camera()
         axes = ThreeDAxes(
-            x_range=[-3, 3, 1], y_range=[-3, 3, 1], z_range=[-2, 2, 1],
-            x_length=6, y_length=6, z_length=4,
+            x_range=[-3, 3, 1],
+            y_range=[-3, 3, 1],
+            z_range=[-2, 2, 1],
+            x_length=6,
+            y_length=6,
+            z_length=4,
         )
         labels = axes.get_axis_labels(
             Text("x").scale(0.6), Text("y").scale(0.6), Text("z").scale(0.6)
@@ -392,12 +427,16 @@ class Test3DScene(ThreeDScene):
 
     def test_08_3d_plane(self):
         self._setup_camera()
-        plane = Surface(
-            lambda u, v: np.array([u, v, 0]),
-            u_range=[-2.5, 2.5],
-            v_range=[-2.5, 2.5],
-            resolution=(8, 8),
-        ).set_color(BLUE_B).set_opacity(0.6)
+        plane = (
+            Surface(
+                lambda u, v: np.array([u, v, 0]),
+                u_range=[-2.5, 2.5],
+                v_range=[-2.5, 2.5],
+                resolution=(8, 8),
+            )
+            .set_color(BLUE_B)
+            .set_opacity(0.6)
+        )
         grid = NumberPlane(x_range=[-3, 3], y_range=[-3, 3]).set_opacity(0.4)
         self.play(Materialize(VGroup(plane, grid)))
         self.wait(0.5)
@@ -406,9 +445,16 @@ class Test3DScene(ThreeDScene):
 
     def test_09_3d_paraboloid(self):
         self._setup_camera()
-        axes = ThreeDAxes(x_range=[-2, 2], y_range=[-2, 2], z_range=[0, 4], x_length=5, y_length=5, z_length=4)
+        axes = ThreeDAxes(
+            x_range=[-2, 2],
+            y_range=[-2, 2],
+            z_range=[0, 4],
+            x_length=5,
+            y_length=5,
+            z_length=4,
+        )
         surface = axes.plot_surface(
-            lambda x, y: x ** 2 + y ** 2,
+            lambda x, y: x**2 + y**2,
             x_range=[-1.8, 1.8],
             y_range=[-1.8, 1.8],
             colorscale=[BLUE, TEAL, GREEN, YELLOW],
@@ -420,9 +466,16 @@ class Test3DScene(ThreeDScene):
 
     def test_10_3d_saddle(self):
         self._setup_camera()
-        axes = ThreeDAxes(x_range=[-2, 2], y_range=[-2, 2], z_range=[-2, 2], x_length=5, y_length=5, z_length=4)
+        axes = ThreeDAxes(
+            x_range=[-2, 2],
+            y_range=[-2, 2],
+            z_range=[-2, 2],
+            x_length=5,
+            y_length=5,
+            z_length=4,
+        )
         surface = axes.plot_surface(
-            lambda x, y: x ** 2 - y ** 2,
+            lambda x, y: x**2 - y**2,
             x_range=[-1.5, 1.5],
             y_range=[-1.5, 1.5],
             colorscale=[BLUE, WHITE, RED],
@@ -434,7 +487,14 @@ class Test3DScene(ThreeDScene):
 
     def test_11_3d_sine_surface(self):
         self._setup_camera()
-        axes = ThreeDAxes(x_range=[-PI, PI], y_range=[-PI, PI], z_range=[-1, 1], x_length=6, y_length=6, z_length=3)
+        axes = ThreeDAxes(
+            x_range=[-PI, PI],
+            y_range=[-PI, PI],
+            z_range=[-1, 1],
+            x_length=6,
+            y_length=6,
+            z_length=3,
+        )
         surface = axes.plot_surface(
             lambda x, y: np.sin(x) * np.cos(y),
             x_range=[-PI, PI],
@@ -448,7 +508,14 @@ class Test3DScene(ThreeDScene):
 
     def test_12_3d_axes_with_plot(self):
         self._setup_camera()
-        axes = ThreeDAxes(x_range=[-2, 2], y_range=[-2, 2], z_range=[-1, 1], x_length=5, y_length=5, z_length=3)
+        axes = ThreeDAxes(
+            x_range=[-2, 2],
+            y_range=[-2, 2],
+            z_range=[-1, 1],
+            x_length=5,
+            y_length=5,
+            z_length=3,
+        )
         curve = ParametricFunction(
             lambda t: axes.c2p(t, np.sin(2 * t), np.cos(3 * t)),
             t_range=[-PI, PI],
@@ -456,7 +523,7 @@ class Test3DScene(ThreeDScene):
             stroke_width=4,
         )
         surface = axes.plot_surface(
-            lambda x, y: np.exp(-(x ** 2 + y ** 2)),
+            lambda x, y: np.exp(-(x**2 + y**2)),
             x_range=[-2, 2],
             y_range=[-2, 2],
             colorscale=[BLUE_E, TEAL, GREEN_B],
@@ -495,16 +562,22 @@ class Test3DScene(ThreeDScene):
     def test_15_3d_sphere_wireframe(self):
         self._setup_camera()
         sphere = Sphere(radius=1.5).set_color(TEAL).set_opacity(0.15)
-        wireframe = Surface(
-            lambda u, v: np.array([
-                1.5 * np.cos(u) * np.sin(v),
-                1.5 * np.sin(u) * np.sin(v),
-                1.5 * np.cos(v),
-            ]),
-            u_range=[0, TAU],
-            v_range=[0, PI],
-            resolution=(12, 8),
-        ).set_stroke(TEAL, width=1, opacity=0.8).set_fill(opacity=0)
+        wireframe = (
+            Surface(
+                lambda u, v: np.array(
+                    [
+                        1.5 * np.cos(u) * np.sin(v),
+                        1.5 * np.sin(u) * np.sin(v),
+                        1.5 * np.cos(v),
+                    ]
+                ),
+                u_range=[0, TAU],
+                v_range=[0, PI],
+                resolution=(12, 8),
+            )
+            .set_stroke(TEAL, width=1, opacity=0.8)
+            .set_fill(opacity=0)
+        )
         self.play(Materialize(VGroup(sphere, wireframe)))
         self.wait(0.5)
         self.play(Disintegrate(VGroup(sphere, wireframe)))

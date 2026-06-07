@@ -10,3 +10,6 @@ dependencies = ["manim>=0.18"]
 
 [tool.setuptools]
 py-modules = ["manim_particles"]
+
+[tool.ruff]
+line-length = 100
