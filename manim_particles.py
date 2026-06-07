@@ -1,5 +1,6 @@
 from manim import *
 import typing
+from PIL import Image
 
 __all__ = ["Disintegrate", "Materialize"]
 
@@ -56,11 +57,69 @@ def _flatten(mob: Mobject) -> VMobject:
     return Union(*leaves)
 
 
+def _to_grid(
+    mob: Mobject,
+    piece_size: float | None,
+    resample: int = Image.Resampling.NEAREST,
+) -> VMobject:
+    stroke_unit = 0.05  # TODO: What does this magic number mean?
+    stroke_offset = stroke_unit * mob.get_stroke_width()
+    width_with_stroke = mob.width + 2 * stroke_offset
+    height_with_stroke = mob.height + 2 * stroke_offset
+
+    image = np.asarray(mob.get_image(Camera(background_opacity=0)))
+    image = image[::-1]  # inverts y axis
+
+    # bounding box of content
+    def to_pixel(frame_position: int, frame_size: float, pixel_size: int) -> int:
+        pixel_position = int((frame_position + frame_size / 2) * pixel_size / frame_size)
+        return max(0, min(pixel_size - 1, pixel_position))
+
+    bb_frame = [
+        mob.get_bottom()[1] - stroke_offset,
+        mob.get_top()[1] + stroke_offset,
+        mob.get_left()[0] - stroke_offset,
+        mob.get_right()[0] + stroke_offset,
+    ]
+    bb_pixel = [
+        to_pixel(bb_frame[0], config.frame_height, config.pixel_height),
+        to_pixel(bb_frame[1], config.frame_height, config.pixel_height),
+        to_pixel(bb_frame[2], config.frame_width, config.pixel_width),
+        to_pixel(bb_frame[3], config.frame_width, config.pixel_width),
+    ]
+    image = image[
+        bb_pixel[0] : bb_pixel[1],
+        bb_pixel[2] : bb_pixel[3],
+    ]
+
+    # resize to fit piece_size
+    if piece_size is not None:
+        resolution = (int(height_with_stroke / piece_size), int(width_with_stroke / piece_size))
+        image = np.asarray(
+            Image.fromarray(image).resize((resolution[1], resolution[0]), resample=resample)
+        )
+    else:
+        piece_size = float((bb_frame[1] - bb_frame[0]) / image.shape[0])
+
+    # create grid
+    grid = VGroup(
+        Square(side_length=piece_size)
+        .move_to((bb_frame[2] + piece_size * x, bb_frame[0] + piece_size * y, 0))
+        .set_fill(color=pixel, opacity=1)
+        .set_stroke(width=0.5, color=pixel, opacity=1)
+        for y in range(image.shape[0])
+        for x in range(image.shape[1])
+        if (pixel := ManimColor.from_rgba(image[y, x])) is not None and pixel[3] > 0
+    )
+    return grid
+
+
 class _Scatter(AnimationGroup):
     def __init__(
         self,
         vmobject: VMobject,
-        piece_size: float = 0.1,
+        fill_piece_size: float = 0.05,
+        stroke_piece_size: float = 0.01,
         to_scale: typing.Callable[[], float] | None = lambda: 0,
         to_fade: typing.Callable[[], float] | None = lambda: 1,
         shift_strength: typing.Callable[[], float] = lambda: np.random.uniform(0.5, 1.5),
@@ -69,45 +128,8 @@ class _Scatter(AnimationGroup):
         z_shift: typing.Callable[[], float] = lambda: 0,
         **kwargs,
     ) -> None:
-        def _intersect(a, b):
-            try:
-                return Intersection(a, b)
-            except Exception:
-                return VMobject()
-
-        union = _flatten(vmobject)
-
-        # Render vmobject on a transparent background so each piece can be
-        # colored with the actual hue of the region it covers, not a mean average.
-        px_arr = np.asarray(vmobject.get_image())  # H × W × 4 RGBA uint8
-        img_h, img_w = px_arr.shape[:2]
-        fw, fh = config.frame_width, config.frame_height
-        fallback_color = _apparent_color(union)
-        fallback_opacity = _apparent_opacity(union)
-
-        def _sample(point):
-            col = int(np.clip((point[0] + fw / 2) / fw * img_w, 0, img_w - 1))
-            row = int(np.clip((fh / 2 - point[1]) / fh * img_h, 0, img_h - 1))
-            rgba = px_arr[row, col].astype(float)
-            if rgba[3] < 10:
-                return rgb_to_color(fallback_color), fallback_opacity
-            # un-premultiply: get_image() returns premultiplied RGBA, so dividing
-            # RGB by alpha recovers the true color regardless of opacity.
-            rgb = np.clip(rgba[:3] / rgba[3], 0, 1)
-            return rgb_to_color(rgb), rgba[3] / 255.0
-
-        pieces = VGroup()
-        for x in np.arange(
-            vmobject.get_left()[0], vmobject.get_right()[0] + piece_size, piece_size
-        ):
-            for y in np.arange(
-                vmobject.get_bottom()[1], vmobject.get_top()[1] + piece_size, piece_size
-            ):
-                piece = _intersect(union, Square(side_length=piece_size).move_to((x, y, 0)))
-                if piece.has_points():
-                    color, opacity = _sample(piece.get_center())
-                    piece.set_stroke(opacity=0).set_fill(color=color, opacity=opacity)
-                    pieces.add(piece)
+        fill_pieces = _to_grid(vmobject.copy().set_stroke(opacity=0), piece_size=fill_piece_size)
+        stroke_pieces = _to_grid(vmobject.copy().set_fill(opacity=0), piece_size=stroke_piece_size)
 
         def animate_piece(piece: VMobject):
             animation = piece.animate.shift(
@@ -123,7 +145,7 @@ class _Scatter(AnimationGroup):
                 animation = animation.fade(to_fade())
             return animation
 
-        animations = (animate_piece(piece) for piece in pieces)
+        animations = (animate_piece(piece) for piece in [*fill_pieces, *stroke_pieces])
         super().__init__(animations, **kwargs)
 
 
