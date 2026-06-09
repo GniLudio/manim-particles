@@ -100,7 +100,7 @@ class _Scatter(AnimationGroup):
             ]
         else:
             self.pieces = [
-                *_to_grid(vmobject.copy().set_stroke(opacity=0), cell_size=piece_size),
+                *_to_grid(vmobject, cell_size=piece_size),
             ]
 
         def animate_piece(piece: VMobject):
