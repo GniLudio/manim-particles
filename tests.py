@@ -48,13 +48,7 @@ class TestScene(Scene):
         pass
 
     def test_01_hello(self):
-        text = (
-            Text("Hello", font_size=100)
-            .set_opacity(0.66)
-            .to_edge(UP)
-            .set_stroke(color=[RED, GREEN])
-            .set_fill(color=[BLUE, YELLOW])
-        )
+        text = Text("Hello", font_size=100).set_opacity(0.66).to_edge(UP)
         self.play(Materialize(text))
         self.wait(0.5)
         self.play(Disintegrate(text), run_time=1.4)
@@ -452,12 +446,7 @@ class Test3DScene(ThreeDScene):
     def test_09_3d_paraboloid(self):
         self._setup_camera()
         axes = ThreeDAxes(
-            x_range=[-2, 2],
-            y_range=[-2, 2],
-            z_range=[0, 4],
-            x_length=5,
-            y_length=5,
-            z_length=4,
+            x_range=[-2, 2], y_range=[-2, 2], z_range=[0, 4], x_length=5, y_length=5, z_length=4
         )
         surface = axes.plot_surface(
             lambda x, y: x**2 + y**2,
@@ -473,12 +462,7 @@ class Test3DScene(ThreeDScene):
     def test_10_3d_saddle(self):
         self._setup_camera()
         axes = ThreeDAxes(
-            x_range=[-2, 2],
-            y_range=[-2, 2],
-            z_range=[-2, 2],
-            x_length=5,
-            y_length=5,
-            z_length=4,
+            x_range=[-2, 2], y_range=[-2, 2], z_range=[-2, 2], x_length=5, y_length=5, z_length=4
         )
         surface = axes.plot_surface(
             lambda x, y: x**2 - y**2,
@@ -515,12 +499,7 @@ class Test3DScene(ThreeDScene):
     def test_12_3d_axes_with_plot(self):
         self._setup_camera()
         axes = ThreeDAxes(
-            x_range=[-2, 2],
-            y_range=[-2, 2],
-            z_range=[-1, 1],
-            x_length=5,
-            y_length=5,
-            z_length=3,
+            x_range=[-2, 2], y_range=[-2, 2], z_range=[-1, 1], x_length=5, y_length=5, z_length=3
         )
         curve = ParametricFunction(
             lambda t: axes.c2p(t, np.sin(2 * t), np.cos(3 * t)),
