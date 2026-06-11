@@ -27,8 +27,8 @@ def _to_grid(mob: VMobject, cell_size: float) -> VMobject:
             height=cell_width,
             stroke_width=stroke_one_px,
             color=ManimColor.from_rgba(pixel),
-            fill_opacity=pixel[3],
-            stroke_opacity=pixel[3],
+            fill_opacity=pixel[3] / 255,
+            stroke_opacity=pixel[3] / 255,
         ).move_to((left + (x + 0.5) * cell_width, bottom + (y + 0.5) * cell_height, 0))
         for y in range(image.shape[0])
         for x in range(image.shape[1])
