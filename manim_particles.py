@@ -16,9 +16,7 @@ def _to_grid(mob: VMobject, cell_size: float) -> VMobject:
     )
     width, height = right - left, top - bottom
     resolution = (max(int(width / cell_size), 1), max(1, int(height / cell_size)))
-    image = np.asarray(
-        Image.fromarray(_to_image(mob)).resize(size=resolution, resample=Image.Resampling.NEAREST)
-    )
+    image = np.asarray(Image.fromarray(_to_image(mob)).resize(size=resolution, resample=Image.Resampling.NEAREST))
     cell_height, cell_width = height / image.shape[0], width / image.shape[1]
     image = np.flipud(image)
     return VGroup(
@@ -52,9 +50,6 @@ def _to_image(mob: VMobject) -> np.ndarray:
     return image
 
 
-type _PieceCallable = Callable[[VGroup, VMobject], float]
-
-
 class _Scatter(AnimationGroup):
     """The scatter animation.
 
@@ -82,11 +77,11 @@ class _Scatter(AnimationGroup):
         self,
         vmobject: VMobject,
         piece_size: float | tuple[float, float] = (0.1, 0.025),
-        to_scale: _PieceCallable | None = lambda *_: 0,
-        to_fade: _PieceCallable | None = lambda *_: 1,
-        scatter_distance: _PieceCallable = lambda *_: np.random.uniform(0.5, 1.5),
-        x_shift: _PieceCallable = lambda *_: np.sin(np.random.uniform(0, 2 * PI)),
-        y_shift: _PieceCallable = lambda *_: np.sin(np.random.uniform(0, 2 * PI)),
+        to_scale: Callable[[VGroup, VMobject], float] | None = lambda *_: 0,
+        to_fade: Callable[[VGroup, VMobject], float] | None = lambda *_: 1,
+        scatter_distance: Callable[[VGroup, VMobject], float] = lambda *_: np.random.uniform(0.5, 1.5),
+        x_shift: Callable[[VGroup, VMobject], float] = lambda *_: np.sin(np.random.uniform(0, 2 * PI)),
+        y_shift: Callable[[VGroup, VMobject], float] = lambda *_: np.sin(np.random.uniform(0, 2 * PI)),
         reverse: bool = False,
         **kwargs,
     ) -> None:
@@ -162,11 +157,11 @@ class Disintegrate(_Scatter):
         self,
         vmobject: VMobject,
         piece_size: float | tuple[float, float] = (0.1, 0.025),
-        to_scale: _PieceCallable | None = lambda *_: 0,
-        to_fade: _PieceCallable | None = lambda *_: 1,
-        scatter_distance: _PieceCallable = lambda *_: np.random.uniform(0.5, 1.5),
-        x_shift: _PieceCallable = lambda *_: np.sin(np.random.uniform(0, 2 * PI)),
-        y_shift: _PieceCallable = lambda *_: np.sin(np.random.uniform(0, 2 * PI)),
+        to_scale: Callable[[VGroup, VMobject], float] | None = lambda *_: 0,
+        to_fade: Callable[[VGroup, VMobject], float] | None = lambda *_: 1,
+        scatter_distance: Callable[[VGroup, VMobject], float] = lambda *_: np.random.uniform(0.5, 1.5),
+        x_shift: Callable[[VGroup, VMobject], float] = lambda *_: np.sin(np.random.uniform(0, 2 * PI)),
+        y_shift: Callable[[VGroup, VMobject], float] = lambda *_: np.sin(np.random.uniform(0, 2 * PI)),
         **kwargs,
     ) -> None:
         super().__init__(
@@ -207,11 +202,11 @@ class Materialize(_Scatter):
         self,
         vmobject: VMobject,
         piece_size: float | tuple[float, float] = (0.1, 0.025),
-        to_scale: _PieceCallable | None = lambda *_: 0,
-        to_fade: _PieceCallable | None = lambda *_: 1,
-        scatter_distance: _PieceCallable = lambda *_: np.random.uniform(0.5, 1.5),
-        x_shift: _PieceCallable = lambda *_: np.sin(np.random.uniform(0, 2 * PI)),
-        y_shift: _PieceCallable = lambda *_: np.sin(np.random.uniform(0, 2 * PI)),
+        to_scale: Callable[[VGroup, VMobject], float] | None = lambda *_: 0,
+        to_fade: Callable[[VGroup, VMobject], float] | None = lambda *_: 1,
+        scatter_distance: Callable[[VGroup, VMobject], float] = lambda *_: np.random.uniform(0.5, 1.5),
+        x_shift: Callable[[VGroup, VMobject], float] = lambda *_: np.sin(np.random.uniform(0, 2 * PI)),
+        y_shift: Callable[[VGroup, VMobject], float] = lambda *_: np.sin(np.random.uniform(0, 2 * PI)),
         **kwargs,
     ) -> None:
         super().__init__(
